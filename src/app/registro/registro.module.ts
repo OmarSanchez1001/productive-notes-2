@@ -11,4 +11,4 @@ import { RegistroComponent } from './registro.component';
   declarations: [RegistroComponent],
   exports: [RegistroComponent]
 })
-export class FormComponentModule {}
+export class RegistroComponentModule {}
