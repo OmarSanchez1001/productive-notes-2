@@ -1,3 +1,9 @@
-<p>
-  Hola. Aqui irá el calendario
-</p>
+<ion-content>
+  <mbsc-eventcalendar [data]="myEvents" [options]="eventSettings" [view]="view" [selectedDate]="selectedDate"></mbsc-eventcalendar>
+<div class="mbsc-button-group-block">
+  <mbsc-button (click)="addEvent()">Agregar Evento</mbsc-button>
+</div>
+<div class="mbsc-button-group-block">
+  <mbsc-button (click)="deleteEvent()">Eliminar Evento</mbsc-button>
+</div>
+</ion-content>

@@ -1,14 +1,22 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { IonicModule } from '@ionic/angular';
-
-import { CalendarioComponent } from './calendario.component'
+import { MbscModule } from '@mobiscroll/angular';
+import { CalendarioComponent } from './calendario.component';
 
 @NgModule({
-  imports: [ CommonModule, FormsModule, IonicModule, ReactiveFormsModule],
-  declarations: [CalendarioComponent],
-  exports: [CalendarioComponent]
+  declarations: [
+    CalendarioComponent
+  ],
+  imports: [
+    MbscModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    HttpClientJsonpModule
+  ],
+  exports: [
+    CalendarioComponent
+  ]
 })
-export class FormComponentModule {}
+export class AppModule { }
