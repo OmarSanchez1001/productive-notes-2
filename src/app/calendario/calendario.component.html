@@ -1,9 +1,22 @@
 <ion-content>
   <mbsc-eventcalendar [data]="myEvents" [options]="eventSettings" [view]="view" [selectedDate]="selectedDate"></mbsc-eventcalendar>
+  <mbsc-popup class="md-tooltip" #popup [anchor]="anchor" [options]="popupOptions">
+    <div (mouseenter)="mouseEnter()" (mouseleave)="mouseLeave()">
+        <div class="md-tooltip-header" [ngStyle]="{background: bgColor}">
+            <span class="md-tooltip-name-age">{{info}}</span>
+            <br>
+            <span class="md-tooltip-time">{{time}}</span>
+        </div>
+        <div class="md-tooltip-info">
+            <div class="md-tooltip-title">
+                Estatus: <span class="md-tooltip-status md-tooltip-text">{{status}}</span>
+                <mbsc-button [color]="buttonType" variant="outline" class="md-tooltip-status-button" (click)="setStatus()">{{buttonText}}</mbsc-button>
+            </div>
+            <mbsc-button color="danger" variant="outline" class="md-tooltip-delete-button" (click)="deleteApp()">Eliminar Evento</mbsc-button>
+        </div>
+    </div>
+</mbsc-popup>
 <div class="mbsc-button-group-block">
   <mbsc-button (click)="addEvent()">Agregar Evento</mbsc-button>
-</div>
-<div class="mbsc-button-group-block">
-  <mbsc-button (click)="deleteEvent()">Eliminar Evento</mbsc-button>
 </div>
 </ion-content>
