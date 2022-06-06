@@ -1,0 +1,13 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Editar notas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <app-notas [enableEdit]="true" [enableRemove]="true"></app-notas>
+
+  <ion-button [routerLink]="['/notes']" expand="block">Regresar</ion-button>
+
+</ion-content>

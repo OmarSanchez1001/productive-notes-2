@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
-import { NotasComponent } from './notas.component';
+import { NotasEditComponent } from './notas-edit.component';
 
 
 @NgModule({
   imports: [ CommonModule, FormsModule, IonicModule, ReactiveFormsModule],
-  declarations: [NotasComponent],
-  exports: [NotasComponent]
+  declarations: [NotasEditComponent],
+  exports: [NotasEditComponent]
 })
-export class NotasComponentModule {}
+
+export class NotasEditComponentModule {}
