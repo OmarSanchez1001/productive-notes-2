@@ -32,6 +32,22 @@ export class DataService {
     return setDoc(document, note);
   }
 
+//  getNotes2(): Observable<any[]> {
+//    const noteCollection = collection(this.firestore, 'notes');
+//    return collectionData(noteCollection, {idField: 'id'})
+//    .pipe(map(notes => notes as any[]));
+//  }
+
+  getNotebyId(id: string): Observable<any> {
+    const document = doc(this.firestore, `notes/${id}`);
+    return docSnapshots(document)
+    .pipe(map(doc => {
+      const id = doc.id;
+      const data = doc.data();
+      return { id, ...data } as any;
+    }))
+  }
+
   editNote(note: any){
     const document = doc(this.firestore, 'notes', note?.id);
     const { id, ...data } = note;

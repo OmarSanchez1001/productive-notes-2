@@ -24,6 +24,10 @@ const routes: Routes = [
   {
     path: 'notes-form',
     loadChildren: () => import('./notes-form/notes-form.module').then( m => m.NotesFormPageModule)
+  },
+  {
+    path: 'notes-edit',
+    loadChildren: () => import('./notes-edit/notes-edit.module').then( m => m.NotesEditPageModule)
   }
 
 

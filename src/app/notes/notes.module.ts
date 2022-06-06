@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { NotesPageRoutingModule } from './notes-routing.module';
 
 import { NotesPage } from './notes.page';
-import { FormComponentModule } from '../notas/notas.module';
+import { NotasComponentModule } from '../notas/notas.module';
 
 @NgModule({
   imports: [
@@ -15,7 +15,7 @@ import { FormComponentModule } from '../notas/notas.module';
     FormsModule,
     IonicModule,
     NotesPageRoutingModule,
-    FormComponentModule
+    NotasComponentModule
   ],
   declarations: [NotesPage]
 })
