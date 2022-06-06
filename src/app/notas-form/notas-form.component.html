@@ -1,0 +1,77 @@
+<ion-grid>
+  <ion-row>
+    <ion-col>
+      <ion-list>
+        <ion-list-header>
+          <ion-label>
+            Por favor, rellene los siguientes campos:
+          </ion-label>
+        </ion-list-header>
+        <form [formGroup]="form" (ngSubmit)="submitForm()">
+          
+          <ion-item>
+            <ion-label position="floating">Fecha</ion-label>
+            <ion-input formControlName="date"></ion-input>
+          </ion-item>
+
+          <ion-label *ngIf="isSubmitted && errorControl?.name.errors?.required"
+          color="danger" class="ion-padding">
+            El campo Fecha es requerido
+          </ion-label>
+
+          <ion-label *ngIf="isSubmitted && errorControl?.name.errors?.pattern"
+          color="danger" class="ion-padding">
+            La fecha no es válida
+          </ion-label>
+
+          <ion-item>
+            <ion-label position="floating">Titulo</ion-label>
+            <ion-input formControlName="title"></ion-input>
+          </ion-item>    
+
+          <ion-label *ngIf="isSubmitted && errorControl?.name.errors?.required"
+          color="danger" class="ion-padding">
+            El campo Titulo es requerido
+          </ion-label>
+
+          <ion-label *ngIf="isSubmitted && errorControl?.name.errors?.minLength"
+          color="danger" class="ion-padding">
+            El titulo debe tener mas de 5 caracteres
+          </ion-label>
+
+          <ion-label *ngIf="isSubmitted && errorControl?.name.errors?.maxLength"
+          color="danger" class="ion-padding">
+            El titulo debe tener menos de 20 caracteres
+          </ion-label>
+
+          <ion-item>
+            <ion-label position="floating">Descripcion</ion-label>
+            <ion-input formControlName="content"></ion-input>
+          </ion-item>    
+
+          <ion-label *ngIf="isSubmitted && errorControl?.name.errors?.required"
+          color="danger" class="ion-padding">
+            El campo Descripcion es requerido
+          </ion-label>
+
+          <ion-label *ngIf="isSubmitted && errorControl?.name.errors?.minLength"
+          color="danger" class="ion-padding">
+            La descripcion debe tener mas de 5 caracteres
+          </ion-label>
+
+          <ion-label *ngIf="isSubmitted && errorControl?.name.errors?.maxLength"
+          color="danger" class="ion-padding">
+            La descripcion debe tener menos de 100 caracteres
+          </ion-label>
+
+          <br>
+
+          <ion-button expand="block" type="submit">Agregar nota</ion-button>
+
+          <br>
+
+        </form>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+</ion-grid>
