@@ -23,7 +23,7 @@ export class NotasComponent implements OnInit {
   notes: any[];
 
   ngOnInit() {
-// const data = this.dataService.getNotes2(); data.subscribe( n => { this.notes = n; this.notes = _.orderBy(this.notes, ['title'], ['asc']); })
+const data = this.dataService.getNotes2(); data.subscribe( n => { this.notes = n; this.notes = _.orderBy(this.notes, ['title'], ['asc']); })
   }
 
   async edit(id: any){
