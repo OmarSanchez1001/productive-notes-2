@@ -14,15 +14,7 @@ const redirectLoggedInToHome = () => redirectLoggedInTo(['home']);
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
-  },
-  {
-    path: 'login-register',
     loadChildren: () => import('./login-register/login-register.module').then( m => m.LoginRegisterPageModule)
-  },
-  {
-    path: 'register',
-    loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
   },
   {
     path: 'calendar',
@@ -40,6 +32,7 @@ const routes: Routes = [
     path: 'notes-edit',
     loadChildren: () => import('./notes-edit/notes-edit.module').then( m => m.NotesEditPageModule)
   }
+
 
 
 

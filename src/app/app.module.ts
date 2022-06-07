@@ -17,7 +17,6 @@ import { provideStorage, getStorage } from '@angular/fire/storage';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { RegisterPage } from './register/register.page';
 import { LoginRegisterPage } from './login-register/login-register.page';
 
 
