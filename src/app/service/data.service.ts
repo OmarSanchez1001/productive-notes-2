@@ -32,11 +32,11 @@ export class DataService {
     return setDoc(document, note);
   }
 
-//  getNotes2(): Observable<any[]> {
-//    const noteCollection = collection(this.firestore, 'notes');
-//    return collectionData(noteCollection, {idField: 'id'})
-//    .pipe(map(notes => notes as any[]));
-//  }
+  getNotes2(): Observable<any[]> {
+    const noteCollection = collection(this.firestore, 'notes');
+    return collectionData(noteCollection, {idField: 'id'})
+    .pipe(map(notes => notes as any[]));
+  }
 
   getNotebyId(id: string): Observable<any> {
     const document = doc(this.firestore, `notes/${id}`);
