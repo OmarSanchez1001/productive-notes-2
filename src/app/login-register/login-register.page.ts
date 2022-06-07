@@ -46,6 +46,7 @@ export class LoginRegisterPage implements OnInit {
  
     if (user) {
       this.router.navigateByUrl('/login-register', { replaceUrl: true });
+      this.showAlert('Registration sucess', 'Please Sign In!');
     } else {
       this.showAlert('Registration failed', 'Please try again!');
     }
