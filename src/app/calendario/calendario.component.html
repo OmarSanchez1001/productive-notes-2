@@ -1,22 +1,47 @@
 <ion-content>
   <mbsc-eventcalendar [data]="myEvents" [options]="eventSettings" [view]="view" [selectedDate]="selectedDate"></mbsc-eventcalendar>
-  <mbsc-popup class="md-tooltip" #popup [anchor]="anchor" [options]="popupOptions">
-    <div (mouseenter)="mouseEnter()" (mouseleave)="mouseLeave()">
-        <div class="md-tooltip-header" [ngStyle]="{background: bgColor}">
-            <span class="md-tooltip-name-age">{{info}}</span>
-            <br>
-            <span class="md-tooltip-time">{{time}}</span>
+  <!--para los eventos personalizados-->
+
+  <mbsc-popup [options]="popupOptions" [anchor]="popupAnchor" [buttons]="popupButtons" [headerText]="popupHeaderText" #popup>
+    <div class="mbsc-form-group">
+        <mbsc-input label="Title" [(ngModel)]="popupEventTitle"></mbsc-input>
+        <mbsc-textarea label="Description" [(ngModel)]="popupEventDescription"></mbsc-textarea>
+    </div>
+    <div class="mbsc-form-group">
+        <mbsc-switch label="All-day" [(ngModel)]="popupEventAllDay"></mbsc-switch>
+        <mbsc-datepicker [(ngModel)]="popupEventDates" [options]="datePickerOptions" [controls]="popupEventAllDay ? datePickerControls : datetimePickerControls" [responsive]="popupEventAllDay ? datePickerResponsive : datetimePickerResponsive" [startInput]="startInput"
+            [endInput]="endInput"></mbsc-datepicker>
+        <mbsc-input #startInput label="Starts"></mbsc-input>
+        <mbsc-input #endInput label="Ends"></mbsc-input>
+        <div class="event-color-c" (click)="openColorPicker($event)">
+            <div class="event-color-label">Color</div>
+            <div class="event-color" [ngStyle]="{background: selectedColor}"></div>
         </div>
-        <div class="md-tooltip-info">
-            <div class="md-tooltip-title">
-                Estatus: <span class="md-tooltip-status md-tooltip-text">{{status}}</span>
-                <mbsc-button [color]="buttonType" variant="outline" class="md-tooltip-status-button" (click)="setStatus()">{{buttonText}}</mbsc-button>
-            </div>
-            <mbsc-button color="danger" variant="outline" class="md-tooltip-delete-button" (click)="deleteApp()">Eliminar Evento</mbsc-button>
+        <mbsc-segmented-group [(ngModel)]="popupEventStatus">
+            <mbsc-segmented value="busy">Show as busy</mbsc-segmented>
+            <mbsc-segmented value="free">Show as free</mbsc-segmented>
+        </mbsc-segmented-group>
+        <div *ngIf="isEdit" class="mbsc-button-group">
+            <mbsc-button class="mbsc-button-block" color="danger" variant="outline" (click)="onDeleteClick()">Delete event
+            </mbsc-button>
         </div>
     </div>
 </mbsc-popup>
-<div class="mbsc-button-group-block">
-  <mbsc-button (click)="addEvent()">Agregar Evento</mbsc-button>
-</div>
+
+  <mbsc-popup [options]="colorOptions" [anchor]="colorAnchor" #colorPicker>
+    <div class="crud-color-row">
+        <div *ngFor="let color of colors;let i=index">
+            <div *ngIf="i<5" class="crud-color-c" [ngClass]="{'selected': tempColor === color}" [attr.data-value]="color" (click)="changeColor($event)">
+                <div class="crud-color mbsc-icon mbsc-font-icon mbsc-icon-material-check" [ngStyle]="{background: color}"></div>
+            </div>
+        </div>
+    </div>
+    <div class="crud-color-row">
+        <div *ngFor="let color of colors;let i=index">
+            <div *ngIf="i>=5" class="crud-color-c" [ngClass]="{'selected': tempColor === color}" [attr.data-value]="color" (click)="changeColor($event)">
+                <div class="crud-color mbsc-icon mbsc-font-icon mbsc-icon-material-check" [ngStyle]="{background: color}"></div>
+            </div>
+        </div>
+    </div>
+</mbsc-popup>
 </ion-content>

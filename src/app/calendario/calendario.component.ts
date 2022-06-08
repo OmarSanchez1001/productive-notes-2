@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MbscEventcalendarOptions, Notifications, MbscCalendarEvent, MbscEventcalendarView} from '@mobiscroll/angular';
 import {
-    MbscPopupOptions,
+    MbscDatepickerOptions,
     MbscPopup,
-    formatDate,
+    MbscPopupOptions,
     setOptions
 } from '@mobiscroll/angular';
 import { HttpClient } from '@angular/common/http';
@@ -12,7 +12,7 @@ import { DAY_OF_MONTH } from '@mobiscroll/angular/dist/js/core/util/datetime';
 setOptions({
     locale: onscroll,
     theme: 'material',
-    themeVariant: 'dark'
+    themeVariant: 'light'
 });
 
 @Component({
@@ -21,167 +21,261 @@ setOptions({
     providers: [Notifications]
 })
 
-export class CalendarioComponent implements OnInit {
+export class CalendarioComponent {
     selectedDate: Date;
     appointments = [];
     // Place the code below into your own component or use the full template
 
-
-    constructor(private http: HttpClient, private notify: Notifications) {}
-
-    myEvents: MbscCalendarEvent[] = [];
-
+    constructor(private notify: Notifications) {}
+    
     @ViewChild('popup', { static: false })
-    tooltip!: MbscPopup;
-
-    currentEvent: any;
-    status = '';
-    buttonText = '';
-    buttonType = '';
-    bgColor = '';
-    info = '';
-    time = '';
-    anchor: HTMLElement | undefined;
-    timer: any;
-
-
-    eventSettings: MbscEventcalendarOptions = {
-        locale: onscroll,
-        theme: 'material',
-        themeVariant: 'dark',
-        clickToCreate: false,
-        dragToCreate: false,
-        dragToMove: false,
-        dragToResize: false,
-        showEventTooltip: false,
+    popup!: MbscPopup;
+    @ViewChild('colorPicker', { static: false })
+    colorPicker: any;
+    popupEventTitle: string | undefined;
+    popupEventDescription = '';
+    popupEventAllDay = true;
+    popupEventDates: any;
+    popupEventStatus = 'busy';
+    calendarSelectedDate: any = new Date();
+    switchLabel: any = 'All-day';
+    tempColor = '';
+    selectedColor = '';
+    colorAnchor: HTMLElement | undefined;
+    colors = ['#ffeb3c', '#ff9900', '#f44437', '#ea1e63', '#9c26b0', '#3f51b5', '', '#009788', '#4baf4f', '#7e5d4e'];
+    myEvents: MbscCalendarEvent[] = [{
+        id: 1,
+        start: '2022-06-08T13:00',
+        end: '2022-06-08T13:45',
+        title: 'Lunch @ Butcher\'s',
+        description: '',
+        allDay: false,
+        free: true,
+        color: '#009788'
+    }, {
+        id: 2,
+        start: '2022-06-07T15:00',
+        end: '2022-06-07T16:00',
+        title: 'General orientation',
+        description: '',
+        allDay: false,
+        free: false,
+        color: '#ff9900'
+    }, {
+        id: 3,
+        start: '2022-06-06T18:00',
+        end: '2022-06-06T22:00',
+        title: 'Dexter BD',
+        description: '',
+        allDay: false,
+        free: true,
+        color: '#3f51b5'
+    }, {
+        id: 4,
+        start: '2022-06-08T10:30',
+        end: '2022-06-08T11:30',
+        title: 'Stakeholder mtg.',
+        description: '',
+        allDay: false,
+        free: false,
+        color: '#f44437'
+    }];
+    tempEvent!: MbscCalendarEvent;
+    calendarOptions: MbscEventcalendarOptions = {
+        clickToCreate: 'double',
+        dragToCreate: true,
+        dragToMove: true,
+        dragToResize: true,
         view: {
-            agenda: { type: 'week'}
+            calendar: { type: 'month', labels: true }
         },
-        onEventClick: (event, inst) => {
-            this.notify.toast({
-                message: event.event.title
-            }),
-            this.tooltip.open();;
+        onEventClick: (args) => {
+            this.isEdit = true;
+            this.tempEvent = args.event;
+            // fill popup form with event data
+            this.loadPopupForm(args.event);
+            // set popup options
+            this.popupHeaderText = 'Edit event';
+            this.popupButtons = this.popupEditButtons;
+            this.popupAnchor = args.domEvent.currentTarget;
+            // open the popup
+            this.popup.open();
         },
-        onEventHoverIn: (args, inst) => {
-            const event: any = args.event;
-            const time = formatDate('hh:mm A', new Date(event.start)) + ' - ' + formatDate('hh:mm A', new Date(event.end));
-
-            this.currentEvent = event;
-
-            if (event.confirmed) {
-                this.status = 'Confirmado';
-                this.buttonText = 'Cancelar Evento';
-                this.buttonType = 'warning';
-            } else {
-                this.status = 'Cancelado';
-                this.buttonText = 'Confirmar Evento';
-                this.buttonType = 'success';
-            }
-
-            this.bgColor = event.color;
-            this.info = event.title;
-            this.time = time;
-
-            clearTimeout(this.timer);
-            this.timer = null;
-
-            this.anchor = args.domEvent.target;
-            this.tooltip.open();
+        onEventCreated: (args) => {
+            setTimeout(() => {
+                this.isEdit = false;
+                this.tempEvent = args.event;
+                // fill popup form with event data
+                this.loadPopupForm(args.event);
+                // set popup options
+                this.popupHeaderText = 'New Event';
+                this.popupButtons = this.popupAddButtons;
+                this.popupAnchor = args.target;
+                // open the popup
+                this.popup.open();
+            });
         },
-        onEventHoverOut: () => {
-            if (!this.timer) {
-                this.timer = setTimeout(() => {
-                    this.tooltip.close();
-                }, 200);
+        onEventDeleted: (args) => {
+            setTimeout(() => {
+                this.deleteEvent(args.event);
+            });
+        },
+        onEventUpdated: (args) => {
+            // here you can update the event in your storage as well, after drag & drop or resize
+            // ...
+        }
+    };
+    popupHeaderText!: string;
+    popupAnchor: HTMLElement | undefined;
+    popupAddButtons = ['cancel', {
+        handler: () => {
+            this.saveEvent();
+        },
+        keyCode: 'enter',
+        text: 'Add',
+        cssClass: 'mbsc-popup-button-primary'
+    }];
+    popupEditButtons = ['cancel', {
+        handler: () => {
+            this.saveEvent();
+        },
+        keyCode: 'enter',
+        text: 'Save',
+        cssClass: 'mbsc-popup-button-primary'
+    }];
+    popupButtons: any = [];
+    popupOptions: MbscPopupOptions = {
+        display: 'bottom',
+        contentPadding: false,
+        fullScreen: true,
+        onClose: () => {
+            if (!this.isEdit) {
+                // refresh the list, if add popup was canceled, to remove the temporary event
+                this.myEvents = [...this.myEvents];
             }
         },
         responsive: {
-            xsmall: {
-                view: {
-                    calendar: {
-                        type: 'month'
-                    },
-                    agenda: {      
-                        type: 'day'
-                    }
-                }
-            },
-            custom: { // Custom breakpoint
-                breakpoint: 600,
-                view: {
-                    calendar: {
-                        labels: true
-                    }
-                }
-            },
+            medium: {
+                display: 'anchored',
+                width: 400,
+                fullScreen: false,
+                touchUi: false
+            }
         }
     };
-
-    popupOptions: MbscPopupOptions = {
-        display: 'anchored',
-        touchUi: false,
-        showOverlay: false,
+    datePickerControls = ['date'];
+    datePickerResponsive: any = {
+        medium: {
+            controls: ['calendar'],
+            touchUi: false
+        }
+    };
+    datetimePickerControls = ['datetime'];
+    datetimePickerResponsive = {
+        medium: {
+            controls: ['calendar', 'time'],
+            touchUi: false
+        }
+    };
+    datePickerOptions: MbscDatepickerOptions = {
+        select: 'range',
+        showRangeLabels: false,
+        touchUi: true
+    };
+    isEdit = false;
+    colorOptions: MbscPopupOptions = {
+        display: 'bottom',
         contentPadding: false,
-        closeOnOverlayClick: false,
-        width: 350
-    };
-    
-    ngOnInit(): void {
-        this.http.jsonp < MbscCalendarEvent[] > ('https://trial.mobiscroll.com/events/?vers=5', 'callback').subscribe((resp) => {
-            this.myEvents = resp;
-        });
-    }
-    
-    
-
-    
-    mouseEnter(): void {
-        if (this.timer) {
-            clearTimeout(this.timer);
-            this.timer = null;
+        showArrow: false,
+        showOverlay: false,
+        buttons: [
+            'cancel',
+            {
+                text: 'Set',
+                keyCode: 'enter',
+                handler: (ev) => {
+                    this.selectedColor = this.tempColor;
+                    this.colorPicker.close();
+                },
+                cssClass: 'mbsc-popup-button-primary'
+            }
+        ],
+        responsive: {
+            medium: {
+                display: 'anchored',
+                buttons: [],
+            }
         }
+    };
+    loadPopupForm(event: MbscCalendarEvent): void {
+        this.popupEventTitle = event.title;
+        this.popupEventDescription = event.description;
+        this.popupEventDates = [event.start, event.end];
+        this.popupEventAllDay = event.allDay || false;
+        this.popupEventStatus = event.status || 'busy';
+        this.selectedColor = event.color || '';
     }
-
-    mouseLeave(): void {
-        this.timer = setTimeout(() => {
-            this.tooltip.close();
-        }, 200);
+    saveEvent(): void {
+        this.tempEvent.title = this.popupEventTitle;
+        this.tempEvent.description = this.popupEventDescription;
+        this.tempEvent.start = this.popupEventDates[0];
+        this.tempEvent.end = this.popupEventDates[1];
+        this.tempEvent.allDay = this.popupEventAllDay;
+        this.tempEvent.status = this.popupEventStatus;
+        this.tempEvent.color = this.selectedColor;
+        if (this.isEdit) {
+            // update the event in the list
+            this.myEvents = [...this.myEvents];
+            // here you can update the event in your storage as well
+            // ...
+        } else {
+            // add the new event to the list
+            this.myEvents = [...this.myEvents, this.tempEvent];
+            // here you can add the event to your storage as well
+            // ...
+        }
+        // navigate the calendar
+        this.calendarSelectedDate = this.popupEventDates[0];
+        // close the popup
+        this.popup.close();
     }
-
-    setStatus(): void {
-        const status = this.myEvents.findIndex((item: any) => item.id === this.currentEvent.id);
-        this.myEvents[status].confirmed = !this.myEvents[status].confirmed;
-        this.tooltip.close();
-        this.notify.toast({
-            message: 'Evento ' + (this.currentEvent.confirmed ? 'confirmado' : 'cancelado')
+    deleteEvent(event: MbscCalendarEvent): void {
+        this.myEvents = this.myEvents.filter(item => item.id !== event.id);
+        this.notify.snackbar({
+            button: {
+                action: () => {
+                    this.myEvents = [...this.myEvents, event];
+                },
+                text: 'Undo'
+            },
+            message: 'Event deleted'
         });
+        // here you can delete the event from your storage as well
+        // ...
+    }
+    onDeleteClick(): void {
+        this.deleteEvent(this.tempEvent);
+        this.popup.close();
     }
 
-    deleteApp(): void {
-        this.myEvents = this.myEvents.filter((item: any) => item.id !== this.currentEvent.id);
-        this.tooltip.close();
-        this.notify.toast({
-            message: 'Evento Eliminado'
-        })
+    selectColor(color: string): void {
+        this.tempColor = color;
     }
 
-    addEvent(): void {
-        const newEvent = {
-            // base properties
-            title: 'Nuevo Evento',
-            color: '#56ca70',
-            start: new Date(2022, 6, 21, 19),
-            end: new Date(2022, 6, 21, 21),
-            // add any property you'd like
-            busy: true
-        };
-        this.selectedDate = new Date(2022, 6, 21);
-        this.myEvents = [...this.myEvents, newEvent];
+    openColorPicker(ev: any): void {
+        this.selectColor(this.selectedColor || '');
+        this.colorAnchor = ev.currentTarget;
+        this.colorPicker.open();
+    }
 
-        this.notify.toast({
-            message: 'Evento añadido'
-        });
+    changeColor(ev: any): void {
+        const color = ev.currentTarget.getAttribute('data-value');
+        this.selectColor(color);
+
+        if (!this.colorPicker.s.buttons.length) {
+            this.selectedColor = color;
+            this.colorPicker.close();
+        }
     }
     
 }
