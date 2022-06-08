@@ -12,7 +12,7 @@ import { DAY_OF_MONTH } from '@mobiscroll/angular/dist/js/core/util/datetime';
 setOptions({
     locale: onscroll,
     theme: 'material',
-    themeVariant: 'dark'
+    themeVariant: 'ligth'
 });
 
 @Component({
@@ -210,9 +210,9 @@ export class CalendarioComponent {
                 action: () => {
                     this.myEvents = [...this.myEvents, event];
                 },
-                text: 'Undo'
+                text: 'Cancelar'
             },
-            message: 'Event deleted'
+            message: 'Evento Eliminado'
         });
         // here you can delete the event from your storage as well
         // ...
