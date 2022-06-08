@@ -12,7 +12,7 @@ import { DAY_OF_MONTH } from '@mobiscroll/angular/dist/js/core/util/datetime';
 setOptions({
     locale: onscroll,
     theme: 'material',
-    themeVariant: 'light'
+    themeVariant: 'dark'
 });
 
 @Component({
