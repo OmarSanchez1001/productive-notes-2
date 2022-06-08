@@ -13,8 +13,8 @@
             <mbsc-input #startInput label="Starts"></mbsc-input>
             <mbsc-input #endInput label="Ends"></mbsc-input>
             <mbsc-segmented-group [(ngModel)]="popupEventStatus">
-                <mbsc-segmented value="busy">Show as busy</mbsc-segmented>
-                <mbsc-segmented value="free">Show as free</mbsc-segmented>
+                <mbsc-segmented value="busy">Confirmado</mbsc-segmented>
+                <mbsc-segmented value="free">Cancelado</mbsc-segmented>
             </mbsc-segmented-group>
             <div *ngIf="isEdit" class="mbsc-button-group">
                 <mbsc-button class="mbsc-button-block" color="danger" variant="outline" (click)="onDeleteClick()">Delete event
